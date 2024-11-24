@@ -1,0 +1,70 @@
+<div class="p-4">
+    <div class="container">
+        <router-outlet>
+            <h1>{{ title }}</h1>
+            <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <!-- Branch Name -->
+                    <div class="mb-3 col-6">
+                        <label class="form-label">Branch Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-building"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                formControlName="name" 
+                                class="form-control" 
+                                [ngClass]="{ 'is-invalid': submitted && f.name.errors }" 
+                            />
+                        </div>
+                        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                            <div *ngIf="f.name.errors.required">Branch Name is required</div>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="mb-3 col-6">
+                        <label class="form-label">Location</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-geo-alt"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                formControlName="location" 
+                                class="form-control" 
+                                [ngClass]="{ 'is-invalid': submitted && f.location.errors }" 
+                            />
+                        </div>
+                        <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
+                            <div *ngIf="f.location.errors.required">Location is required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save and Cancel Buttons -->
+                <div class="mb-3">
+                    <button 
+                        [disabled]="submitting" 
+                        class="btn btn-primary btn-hover"
+                    >
+                        <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
+                        <i class="bi bi-save"></i> Save
+                    </button>
+                    <a 
+                        routerLink="/branch" 
+                        class="btn btn-link btn-hover text-decoration-none"
+                    >
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+            </form>
+
+            <!-- Loading Spinner -->
+            <div *ngIf="loading" class="text-center m-5">
+                <span class="spinner-border spinner-border-lg align-center"></span>
+            </div>
+        </router-outlet>
+    </div>
+</div>

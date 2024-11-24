@@ -1,0 +1,141 @@
+<div class="p-4">
+    <div class="container">
+        <router-outlet></router-outlet>
+        <h1><i class="fas fa-building"></i> Branches</h1>
+        <p>All branches from secure (admin-only) API endpoint:</p>
+
+        <!-- Button to Open Modal -->
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <a routerLink="add" data-bs-toggle="modal" class="btn btn-sm btn-success mb-2">
+                        <i class="bi bi-plus-circle me-1"></i> Create Branch
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-info mb-2" (click)="openBranchDetailsModal()" title="View Branch Details">
+                        <i class="bi bi-search me-1"></i> Get Branch Details
+                    </button>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#assignUserModal" title="Assign User to Branch">
+                        <i class="bi bi-person-plus me-1"></i> Assign User
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table with Branches -->
+        <table class="table table-hover table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:30%">Branch Name</th>
+                    <th style="width:30%">Location</th>
+                    <th style="width:30%">Status</th>
+                    <th style="width:10%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let branch of branches" class="align-middle">
+                    <td>{{ branch.name }}</td>
+                    <td>{{ branch.location }}</td>
+                    <td>{{ branch.branchStatus }}</td>
+                    <td class="text-center">
+                        <a routerLink="edit/{{ branch.id }}" class="btn btn-sm btn-primary me-1" title="Edit Branch">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <button (click)="toggleDeactivateReactivateBranch(branch.id)" 
+                                [ngClass]="{'btn-danger': branch.branchStatus !== 'deactivated', 'btn-success': branch.branchStatus === 'deactivated'}" 
+                                class="btn btn-sm me-1"
+                                title="{{ branch.branchStatus !== 'deactivated' ? 'Deactivate Branch' : 'Reactivate Branch' }}">
+                            <span *ngIf="branch.isDeactivating || branch.isReactivating" class="spinner-border spinner-border-sm"></span>
+                            <i class="bi" [ngClass]="{'bi-lock-fill': branch.branchStatus !== 'deactivated', 'bi-unlock-fill': branch.branchStatus === 'deactivated'}"></i>
+                        </button>
+                        <button *ngIf="branch.branchStatus === 'deactivated'" (click)="deleteBranch(branch.id)" 
+                                class="btn btn-sm btn-danger" 
+                                [disabled]="branch.isDeleting"
+                                title="Delete Branch">
+                            <span *ngIf="branch.isDeleting" class="spinner-border spinner-border-sm"></span>
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="loadingBranches">
+                    <td colspan="4" class="text-center">
+                        <span class="spinner-border spinner-border-lg align-center"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Assign User Modal -->
+        <div class="modal fade" id="assignUserModal" tabindex="-1" aria-labelledby="assignUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="assignUserModalLabel">
+                            <i class="bi bi-person-plus me-1"></i> Assign User to Branch
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form (ngSubmit)="assignUserToBranch()" #assignForm="ngForm">
+                            <div class="mb-3">
+                                <label for="branchSelect" class="form-label">Select Branch</label>
+                                <select [(ngModel)]="selectedBranchId" name="branchSelect" class="form-select" required>
+                                    <option *ngFor="let branch of branches" [value]="branch.id" [disabled]="branch.branchStatus === 'deactivated'">
+                                        {{ branch.name }} <span *ngIf="branch.branchStatus === 'deactivated'">(Deactivated)</span>
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountSelect" class="form-label">Select User</label>
+                                <select [(ngModel)]="selectedAccountId" name="accountSelect" class="form-select" required>
+                                    <option *ngFor="let account of accounts" [value]="account.id">
+                                        {{ account.firstName }} ({{ account.role }})
+                                    </option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" [disabled]="assignForm.invalid || submitting">
+                                <i class="bi bi-check-circle me-1"></i> Assign
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Branch Details Modal -->
+        <div class="modal fade" id="branchDetailsModal" tabindex="-1" aria-labelledby="branchDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="branchDetailsModalLabel">
+                            <i class="bi bi-info-circle me-1"></i> Branch Details
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetBranchDetails()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form (ngSubmit)="getBranchDetails()" #branchDetailsForm="ngForm">
+                            <div class="mb-3">
+                                <label for="branchSelect" class="form-label">Select Branch</label>
+                                <select [(ngModel)]="selectedBranchId" name="branchSelect" class="form-select" required>
+                                    <option *ngFor="let branch of branches" [value]="branch.id">{{ branch.name }}</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" [disabled]="!selectedBranchId">
+                                <i class="bi bi-search me-1"></i> Get Details
+                            </button>
+                        </form>
+                        <div *ngIf="branchDetails && !errorMessage" class="mt-4">
+                            <h4>Branch Information</h4>
+                            <p><strong>Name:</strong> {{ branchDetails.name }}</p>
+                            <p><strong>Location:</strong> {{ branchDetails.location }}</p>
+                            <p><strong>Status:</strong> {{ branchDetails.branchStatus }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

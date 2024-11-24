@@ -1,0 +1,116 @@
+﻿<!-- Profile Section -->
+<h1 class="text-center mb-4 d-flex justify-content-center align-items-center">
+    <!-- Bootstrap Person Icon -->
+    <i class="bi bi-person-circle" style="font-size: 2.5rem; margin-right: 15px;"></i>
+    
+    <!-- Profile Text -->
+    <span class="h3">My Profile</span>
+    
+    <!-- Additional Profile Icon (Settings) -->
+    <i class="bi bi-gear-fill" style="font-size: 1.8rem; margin-left: 15px;"></i>
+</h1>
+
+<!-- Profile Picture Upload -->
+<div class="d-flex justify-content-center mb-5">
+    <div class="position-relative">
+        <!-- Profile Picture -->
+        <img 
+            [src]="profilePicture" 
+            alt="Profile Picture" 
+            class="rounded-circle shadow-lg border border-5 border-primary" 
+            style="width: 160px; height: 160px; object-fit: cover;" 
+        />
+        <!-- Upload Button -->
+        <label 
+            for="uploadPicture" 
+            class="btn btn-primary position-absolute bottom-0 end-0 rounded-circle shadow-sm"
+            style="width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; cursor: pointer;"
+        >
+            <i class="bi bi-camera" style="font-size: 20px;"></i>
+        </label>
+        <input 
+            id="uploadPicture" 
+            type="file" 
+            accept="image/*" 
+            (change)="onPictureUpload($event)" 
+            hidden 
+        />
+    </div>
+</div>
+
+<!-- Account Details Section -->
+<h2 class="text-primary mb-3">
+    <i class="bi bi-card-list"></i> Account Details
+</h2>
+<div *ngIf="account" class="card shadow-lg p-4 mb-4 border-0">
+    <div class="mb-3">
+        <strong><i class="bi bi-person-fill"></i> Name: </strong> 
+        <span class="text-muted">{{ account.firstName }} {{ account.lastName }}</span><br />
+        <strong><i class="bi bi-envelope"></i> Email: </strong> 
+        <span class="text-muted">{{ account.email }}</span><br />
+        <strong><i class="bi bi-shield-lock-fill"></i> Role: </strong> 
+        <span class="text-muted">{{ account.role }}</span><br />
+    </div>
+    <!-- Update Profile Button -->
+    <div class="text-center">
+        <p>
+            <a routerLink="update" class="btn btn-success px-4 py-2">
+                <i class="bi bi-pencil-square"></i> Update Profile
+            </a>
+        </p>
+    </div>
+</div>
+
+<!-- Branch Information Card (Only for Managers) -->
+<div *ngIf="isManager()" class="card shadow-lg p-4 mb-4 border-0 position-relative">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="text-primary"><i class="bi bi-building"></i> Branch Information</h3>
+        <button (click)="toggleBranchInfo()" class="btn btn-outline-primary">
+            <i class="bi" [ngClass]="showBranchInfo ? 'bi-eye-slash' : 'bi-eye'"></i>
+            {{ showBranchInfo ? 'Hide Branch Information' : 'Show Branch Information' }}
+        </button>
+    </div>
+    <!-- Branch Info Display -->
+    <div *ngIf="showBranchInfo" class="mt-3">
+        <div class="card p-3 bg-light border-0">
+            <strong><i class="bi bi-geo-alt"></i> Branch: </strong> 
+            <span class="text-muted">{{ branch?.name || 'No Branch Assigned' }}</span><br />
+            <strong><i class="bi bi-map"></i> Location: </strong> 
+            <span class="text-muted">{{ branch?.location || 'N/A' }}</span><br />
+            <strong><i class="bi bi-check-circle"></i> Status: </strong> 
+            <span class="text-muted">{{ branch?.branchStatus || 'N/A' }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Logs Card -->
+<div class="card shadow-lg p-4 mb-4 border-0 position-relative">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="text-primary"><i class="bi bi-clock-history"></i> Activity Logs</h3>
+        <button (click)="toggleActivityLogs()" class="btn btn-outline-primary">
+            <i class="bi" [ngClass]="showActivityLogs ? 'bi-eye-slash' : 'bi-eye'"></i>
+            {{ showActivityLogs ? 'Hide Activity Logs' : 'Show Activity Logs' }}
+        </button>
+    </div>
+    <!-- Activity Logs Table -->
+    <div *ngIf="showActivityLogs" class="mt-3">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th><i class="bi bi-list-task"></i> Action Type</th>
+                        <th><i class="bi bi-info-circle"></i> Details</th>
+                        <th><i class="bi bi-calendar-event"></i> Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let log of activityLogs">
+                        <td>{{ log.actionType }}</td>
+                        <td>{{ log.actionDetails }}</td>
+                        <td>{{ log.timestamp | date:'short' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

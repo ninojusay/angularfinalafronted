@@ -1,0 +1,97 @@
+﻿<div class="d-flex align-items-center justify-content-center vh-100 bg-light text-dark">
+    <div class="text-center">
+        <!-- Profile Picture Section -->
+        <div class="mb-4">
+            <img *ngIf="account?.profilePicture; else defaultProfile" 
+                 [src]="account.profilePicture" 
+                 class="rounded-circle shadow-lg" 
+                 alt="Profile Picture" 
+                 width="150" 
+                 height="150">
+            <ng-template #defaultProfile>
+                <img src="https://via.placeholder.com/150" 
+                     class="rounded-circle shadow-lg" 
+                     alt="Default Profile Picture" 
+                     width="150" 
+                     height="150">
+            </ng-template>
+        </div>
+
+        <!-- Welcome Message -->
+        <h1 class="mb-3 display-4 text-primary">
+            Welcome, {{ account?.firstName }}!
+        </h1>
+        <p class="lead mb-4">
+            You're logged in to the Saturn website. Explore and enjoy our services!
+        </p>
+
+        <!-- Call-to-Action Buttons -->
+        <div class="mt-3">
+            <a routerLink="/dashboard" class="btn btn-primary btn-lg me-2">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+            <a routerLink="/profile" class="btn btn-outline-secondary btn-lg">
+                <i class="fas fa-user"></i> View Profile
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Embedded CSS -->
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        background: #f8f9fa;
+        color: #212529;
+    }
+
+    .vh-100 {
+        height: 100vh;
+    }
+
+    img.rounded-circle {
+        border: 4px solid #007bff;
+        transition: transform 0.3s ease;
+    }
+
+    img.rounded-circle:hover {
+        transform: scale(1.1);
+    }
+
+    h1 {
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    p.lead {
+        font-size: 1.25rem;
+        color: #6c757d;
+    }
+
+    .btn {
+        font-size: 1.125rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-outline-secondary {
+        border: 2px solid #6c757d;
+        color: #6c757d;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+</style>

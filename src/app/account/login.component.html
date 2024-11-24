@@ -1,0 +1,58 @@
+﻿<h3 class="card-header">
+    <i class="bi bi-briefcase-fill me-2"></i> <!-- Icon: Briefcase -->
+    Inventory and Sales Management 
+</h3>
+
+<div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span> <!-- Email Icon -->
+                <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+            </div>
+            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                <div *ngIf="f.email.errors.required">Email is required</div>
+                <div *ngIf="f.email.errors.email">Email is invalid</div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span> <!-- Password Icon -->
+                <input [type]="passwordVisible ? 'text' : 'password'" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                    <i [ngClass]="passwordVisible ? 'bi bi-eye-slash' : 'bi bi-eye'"></i> <!-- Toggle Password Visibility -->
+                </button>
+            </div>
+            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                <div *ngIf="f.password.errors.required">Password is required</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 col">
+                <button [disabled]="submitting" class="btn btn-primary">
+                    <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
+                    Login
+                </button>
+                <a routerLink="../register" class="btn btn-link">Do you have already an account? Register</a>
+            </div>
+            <div class="mb-3 col text-end">
+                <a routerLink="../forgot-password" class="btn btn-sm btn-secondary mb-2">Forgot Password?</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Social Media Login Section -->
+<div class="d-flex justify-content-center mt-4 social-media-login">
+    <a href="https://www.facebook.com/ninzyo" target="_blank" class="btn btn-outline-primary me-2">
+        <i class="bi bi-facebook"></i> Visit my Facebook
+    </a>
+    <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="btn btn-outline-danger me-2">
+        <i class="bi bi-google"></i> Email at Gmail
+    </a>
+    <a href="https://github.com/ninojusay" target="_blank" class="btn btn-outline-dark">
+        <i class="bi bi-github"></i> Visit my GitHub
+    </a>
+</div>
